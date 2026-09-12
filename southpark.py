@@ -32,6 +32,11 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; rv:25.0) Gecko/20100101 Firefox/25.0'
 WARNING_TIMEOUT_LONG  = 7000
 WARNING_TIMEOUT_SHORT = 3000
 
+SHOW_TITLE     = "South Park"
+IMAGE_HOST_OLD = "images.viacbs.tech"
+IMAGE_HOST     = "images.paramount.tech"
+IMAGE_WIDTH    = 1920
+
 PLUGIN_MODE_SEASON      = "sp:season"
 PLUGIN_MODE_RANDOM      = "sp:random"
 PLUGIN_MODE_SEARCH      = "sp:search"
@@ -67,7 +72,21 @@ def _date(string):
 			return datetime.datetime.fromtimestamp(int(string)).strftime('%Y-%m-%d %H:%M:%S')
 		except:
 			pass
+		parts = string.split("/")
+		if len(parts) == 3:
+			try:
+				return "{0:04d}-{1:02d}-{2:02d}".format(int(parts[2]), int(parts[0]), int(parts[1]))
+			except ValueError:
+				pass
 	return string
+
+def _artwork(url):
+	if not isinstance(url, str) or not url.startswith("http"):
+		return url
+	url = url.replace(IMAGE_HOST_OLD, IMAGE_HOST)
+	if IMAGE_HOST in url:
+		return "{0}?width={1}".format(url.split("?")[0], IMAGE_WIDTH)
+	return url
 
 def _encode(string):
 	if IS_PY3:
@@ -313,8 +332,8 @@ class SouthParkAddon(object):
 		liz = xbmcgui.ListItem(name)
 		if KODI_VERSION_MAJOR > 17:
 			liz.setIsFolder(True)
-		liz.setArt({'icon': iconimage, 'thumb': iconimage})
-		liz.setInfo(type="Video", infoLabels={"Title": name})
+		liz.setArt({'icon': iconimage, 'thumb': iconimage, 'poster': iconimage, 'fanart': self.paths.DEFAULT_FANART})
+		liz.setInfo(type="Video", infoLabels={"Title": name, "TVShowTitle": SHOW_TITLE, "Season": season, "mediatype": "season"})
 		liz.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		ok = xbmcplugin.addDirectoryItem(handle=self.phandle, url=u, listitem=liz, isFolder=True)
 		return ok
@@ -322,17 +341,18 @@ class SouthParkAddon(object):
 	def add_entry(self, name, url, mode, iconimage, desc="", season="", episode="", date="", is_playable=False):
 		name    = _encode(name)
 		desc    = _encode(desc)
-		if "?" in iconimage:
-			pos = iconimage.index('?') - len(iconimage)
-			iconimage = iconimage[:pos]
+		iconimage = _artwork(iconimage)
 		url       = "{0}?mode={1}&season={2}&episode={3}".format(self.argv[0], mode, season, episode)
 		convdate  = _date(date)
 		is_folder = not is_playable
 		entry = xbmcgui.ListItem(name)
 		if KODI_VERSION_MAJOR > 17:
 			entry.setIsFolder(is_folder)
-		entry.setArt({'thumb': iconimage})
-		entry.setInfo(type="Video", infoLabels={"Title": name, "Plot": desc, "Season": season, "Episode": episode, "Aired": convdate})
+		art = {'thumb': iconimage, 'fanart': self.paths.DEFAULT_FANART}
+		if IMAGE_HOST in iconimage:
+			art['landscape'] = iconimage
+		entry.setArt(art)
+		entry.setInfo(type="Video", infoLabels={"Title": name, "Plot": desc, "Season": season, "Episode": episode, "Aired": convdate, "Premiered": convdate, "TVShowTitle": SHOW_TITLE, "mediatype": "episode"})
 		entry.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		entry.setProperty("isPlayable", "true" if is_playable else "false")
 		xbmcplugin.setContent(self.phandle, 'episodes')
@@ -454,8 +474,9 @@ class SouthParkAddon(object):
 			if len(streams) > 1:
 				title = "{title} ({i}/{n})".format(title=title, i=(i + 1), n=parts)
 
-			playitem.setArt({'icon': data["image"], 'thumb': data["image"]})
-			playitem.setInfo('video', {'Title': title, 'Plot': data["details"]})
+			epimage = _artwork(data["image"])
+			playitem.setArt({'icon': epimage, 'thumb': epimage, 'landscape': epimage, 'fanart': self.paths.DEFAULT_FANART})
+			playitem.setInfo('video', {'Title': title, 'Plot': data["details"], 'Season': season, 'Episode': episode, 'Aired': _date(data.get("date", "")), 'TVShowTitle': SHOW_TITLE, 'mediatype': 'episode'})
 			if manifest_types[i] == "dash":
 				playitem.setMimeType("application/dash+xml")
 				playitem.setContentLookup(False)
