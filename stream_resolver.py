@@ -7,7 +7,7 @@ from urllib.parse import urlencode, urljoin, urlsplit, urlunsplit
 
 
 REGION_DOMAINS = {
-	"en": "https://southparkstudios.com",
+	"en": "https://www.southpark.de/en",
 	"es": "https://southparkstudios.com",
 	"de": "https://www.southpark.de",
 	"se": "https://www.southparkstudios.nu",
@@ -30,7 +30,7 @@ def build_episode_page_url(region, episode_url):
 	domain = REGION_DOMAINS.get(region)
 	if not domain or not isinstance(episode_url, str) or not episode_url:
 		raise StreamResolutionError("Episode page is unavailable for this region")
-	return urljoin(domain + "/", episode_url)
+	return urljoin(domain + "/", episode_url.lstrip("/"))
 
 
 def _walk_dicts(value):
