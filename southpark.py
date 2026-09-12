@@ -244,6 +244,9 @@ class SP_Paths(object):
 		self.PLUGIN_ICON      = self.translate_path('special://home/addons/{0}/icon.png'.format(addon_id))
 		self.DEFAULT_FANART   = self.translate_path('special://home/addons/{0}/fanart.jpg'.format(addon_id))
 		self.DEFAULT_IMGDIR   = self.translate_path('special://home/addons/{0}/imgs/'.format(addon_id))
+		self.CLEARLOGO        = self.translate_path('special://home/addons/{0}/resources/media/clearlogo.png'.format(addon_id))
+		self.CLEARART         = self.translate_path('special://home/addons/{0}/resources/media/clearart.png'.format(addon_id))
+		self.BANNER           = self.translate_path('special://home/addons/{0}/resources/media/banner.jpg'.format(addon_id))
 		self.TEMPORARY_FOLDER = self.translate_path('special://temp/{0}'.format(addon_id))
 		self.PLUGIN_DATA      = os.path.join(self.TEMPORARY_FOLDER, 'data_{}.json')
 		if not os.path.isdir(self.TEMPORARY_FOLDER):
@@ -332,7 +335,10 @@ class SouthParkAddon(object):
 		liz = xbmcgui.ListItem(name)
 		if KODI_VERSION_MAJOR > 17:
 			liz.setIsFolder(True)
-		liz.setArt({'icon': iconimage, 'thumb': iconimage, 'poster': iconimage, 'fanart': self.paths.DEFAULT_FANART})
+		liz.setArt({'icon': iconimage, 'thumb': iconimage, 'poster': iconimage, 'fanart': self.paths.DEFAULT_FANART,
+			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
+			'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
+			'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER})
 		liz.setInfo(type="Video", infoLabels={"Title": name, "TVShowTitle": SHOW_TITLE, "Season": season, "mediatype": "season"})
 		liz.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		ok = xbmcplugin.addDirectoryItem(handle=self.phandle, url=u, listitem=liz, isFolder=True)
@@ -348,7 +354,10 @@ class SouthParkAddon(object):
 		entry = xbmcgui.ListItem(name)
 		if KODI_VERSION_MAJOR > 17:
 			entry.setIsFolder(is_folder)
-		art = {'thumb': iconimage, 'fanart': self.paths.DEFAULT_FANART}
+		art = {'thumb': iconimage, 'fanart': self.paths.DEFAULT_FANART,
+			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
+			'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
+			'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER}
 		if IMAGE_HOST in iconimage:
 			art['landscape'] = iconimage
 		entry.setArt(art)
@@ -475,7 +484,10 @@ class SouthParkAddon(object):
 				title = "{title} ({i}/{n})".format(title=title, i=(i + 1), n=parts)
 
 			epimage = _artwork(data["image"])
-			playitem.setArt({'icon': epimage, 'thumb': epimage, 'landscape': epimage, 'fanart': self.paths.DEFAULT_FANART})
+			playitem.setArt({'icon': epimage, 'thumb': epimage, 'landscape': epimage, 'fanart': self.paths.DEFAULT_FANART,
+				'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
+				'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
+				'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER})
 			playitem.setInfo('video', {'Title': title, 'Plot': data["details"], 'Season': season, 'Episode': episode, 'Aired': _date(data.get("date", "")), 'TVShowTitle': SHOW_TITLE, 'mediatype': 'episode'})
 			if manifest_types[i] == "dash":
 				playitem.setMimeType("application/dash+xml")
