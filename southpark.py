@@ -41,10 +41,10 @@ PLUGIN_MODE_PREMIERE    = "sp:beforepremiere"
 PLUGIN_MODE_CLEARCACHE  = "sp:clearcache"
 
 def log_debug(message):
-	xbmc.log("[sp.addon] {}".format(message), xbmc.LOGDEBUG)
+	xbmc.log("[parkstream] {}".format(message), xbmc.LOGDEBUG)
 
 def log_error(message):
-	xbmc.log("[sp.addon] {}".format(message), xbmc.LOGERROR)
+	xbmc.log("[parkstream] {}".format(message), xbmc.LOGERROR)
 
 def _unescape(s):
 	htmlCodes = [["'", '&#39;'],['"', '&quot;'],['', '&gt;'],['', '&lt;'],['&', '&amp;']]
@@ -225,8 +225,8 @@ class SP_Paths(object):
 		self.PLUGIN_ICON      = self.translate_path('special://home/addons/{0}/icon.png'.format(addon_id))
 		self.DEFAULT_FANART   = self.translate_path('special://home/addons/{0}/fanart.jpg'.format(addon_id))
 		self.DEFAULT_IMGDIR   = self.translate_path('special://home/addons/{0}/imgs/'.format(addon_id))
-		self.TEMPORARY_FOLDER = self.translate_path('special://temp/southpark')
-		self.PLUGIN_DATA      = self.translate_path('special://temp/southpark/data_{}.json')
+		self.TEMPORARY_FOLDER = self.translate_path('special://temp/{0}'.format(addon_id))
+		self.PLUGIN_DATA      = os.path.join(self.TEMPORARY_FOLDER, 'data_{}.json')
 		if not os.path.isdir(self.TEMPORARY_FOLDER):
 			os.mkdir(self.TEMPORARY_FOLDER, 0o755)
 
@@ -290,7 +290,7 @@ class SP_Data(object):
 
 class SouthParkAddon(object):
 	"""South Park Addon"""
-	def __init__(self, argv, addon_id='plugin.video.southpark_unofficial'):
+	def __init__(self, argv, addon_id='plugin.video.parkstream'):
 		super(SouthParkAddon, self).__init__()
 		self.addon_id  = addon_id
 		self.addon_obj = xbmcaddon.Addon(id=self.addon_id)

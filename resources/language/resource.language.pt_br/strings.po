@@ -1,6 +1,6 @@
 # Kodi Media Center language file
-# Addon Name: South Park Unofficial Player
-# Addon id: plugin.video.southpark_unofficial
+# Addon Name: ParkStream
+# Addon id: plugin.video.parkstream
 # Addon Provider: wargio
 msgid ""
 msgstr ""
