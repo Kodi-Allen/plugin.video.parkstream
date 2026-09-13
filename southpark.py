@@ -244,6 +244,7 @@ class SP_Paths(object):
 		self.PLUGIN_ICON      = self.translate_path('special://home/addons/{0}/icon.png'.format(addon_id))
 		self.DEFAULT_FANART   = self.translate_path('special://home/addons/{0}/fanart.jpg'.format(addon_id))
 		self.DEFAULT_IMGDIR   = self.translate_path('special://home/addons/{0}/imgs/'.format(addon_id))
+		self.PARKSTREAM_CLEARART = self.translate_path('special://home/addons/{0}/resources/media/parkstream-clearart.png'.format(addon_id))
 		self.CLEARLOGO        = self.translate_path('special://home/addons/{0}/resources/media/clearlogo.png'.format(addon_id))
 		self.CLEARART         = self.translate_path('special://home/addons/{0}/resources/media/clearart.png'.format(addon_id))
 		self.BANNER           = self.translate_path('special://home/addons/{0}/resources/media/banner.jpg'.format(addon_id))
@@ -336,7 +337,7 @@ class SouthParkAddon(object):
 		if KODI_VERSION_MAJOR > 17:
 			liz.setIsFolder(True)
 		liz.setArt({'icon': iconimage, 'thumb': iconimage, 'poster': iconimage, 'fanart': self.paths.DEFAULT_FANART,
-			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
+			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.PARKSTREAM_CLEARART,
 			'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
 			'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER})
 		liz.setInfo(type="Video", infoLabels={"Title": name, "TVShowTitle": SHOW_TITLE, "Season": season, "mediatype": "season"})
@@ -361,7 +362,7 @@ class SouthParkAddon(object):
 		if IMAGE_HOST in iconimage:
 			art['landscape'] = iconimage
 		entry.setArt(art)
-		entry.setInfo(type="Video", infoLabels={"Title": name, "Plot": desc, "Season": season, "Episode": episode, "Aired": convdate, "Premiered": convdate, "TVShowTitle": SHOW_TITLE, "mediatype": "episode"})
+		entry.setInfo(type="Video", infoLabels={"Title": name, "Plot": desc, "Season": season, "Episode": episode, "Aired": convdate, "Premiered": convdate, "mediatype": "episode"})
 		entry.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		entry.setProperty("isPlayable", "true" if is_playable else "false")
 		xbmcplugin.setContent(self.phandle, 'episodes')
