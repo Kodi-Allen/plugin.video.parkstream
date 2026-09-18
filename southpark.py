@@ -37,6 +37,11 @@ IMAGE_HOST_OLD = "images.viacbs.tech"
 IMAGE_HOST     = "images.paramount.tech"
 IMAGE_WIDTH    = 1920
 
+SEASON_PLOT_LANGUAGES = {
+	"en": "en", "es": "es", "de": "de", "se": "sv",
+	"eu": "en", "br": "pt", "lat": "es"
+}
+
 PLUGIN_MODE_SEASON      = "sp:season"
 PLUGIN_MODE_RANDOM      = "sp:random"
 PLUGIN_MODE_SEARCH      = "sp:search"
@@ -79,6 +84,19 @@ def _date(string):
 			except ValueError:
 				pass
 	return string
+
+def _load_season_plots(path):
+	try:
+		with open(path, "r", encoding="utf-8") as metadata_file:
+			return _json.load(metadata_file).get("plots", {})
+	except (IOError, OSError, ValueError) as e:
+		log_error("Cannot load season plots: {}".format(e))
+		return {}
+
+def _season_plot(plots, language, season):
+	season = str(season)
+	plot_language = SEASON_PLOT_LANGUAGES.get(language, "en")
+	return plots.get(plot_language, {}).get(season, plots.get("en", {}).get(season, ""))
 
 def _artwork(url):
 	if not isinstance(url, str) or not url.startswith("http"):
@@ -244,6 +262,8 @@ class SP_Paths(object):
 		self.PLUGIN_ICON      = self.translate_path('special://home/addons/{0}/icon.png'.format(addon_id))
 		self.DEFAULT_FANART   = self.translate_path('special://home/addons/{0}/fanart.jpg'.format(addon_id))
 		self.DEFAULT_IMGDIR   = self.translate_path('special://home/addons/{0}/imgs/'.format(addon_id))
+		self.RANDOM_POSTER    = self.translate_path('special://home/addons/{0}/resources/media/random-episode-poster.png'.format(addon_id))
+		self.SEASON_PLOTS     = self.translate_path('special://home/addons/{0}/resources/data/season-plots.json'.format(addon_id))
 		self.CLEARLOGO        = self.translate_path('special://home/addons/{0}/resources/media/clearlogo.png'.format(addon_id))
 		self.CLEARART         = self.translate_path('special://home/addons/{0}/resources/media/clearart.png'.format(addon_id))
 		self.BANNER           = self.translate_path('special://home/addons/{0}/resources/media/banner.jpg'.format(addon_id))
@@ -322,6 +342,7 @@ class SouthParkAddon(object):
 		self.options   = SP_Options  (self.addon_obj)
 		self.i18n      = SP_I18N   (self.addon_obj)
 		self.data      = _load_data(self.options.audio(True), self.paths.PLUGIN_DATA)
+		self.season_plots = _load_season_plots(self.paths.SEASON_PLOTS)
 
 	def notify(self, text, utime=WARNING_TIMEOUT_SHORT):
 		utext      = _encode(text)
@@ -329,7 +350,7 @@ class SouthParkAddon(object):
 		uaddonname = _encode(self.addon_obj.getAddonInfo('name'))
 		xbmcgui.Dialog().notification(uaddonname, utext, uicon, utime)
 
-	def add_directory(self, name, season, mode, iconimage="DefaultFolder.png"):
+	def add_directory(self, name, season, mode, iconimage="DefaultFolder.png", plot=""):
 		u = self.argv[0]+"?mode={0}&season={1}".format(mode, season)
 		ok = True
 		liz = xbmcgui.ListItem(name)
@@ -339,12 +360,15 @@ class SouthParkAddon(object):
 			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
 			'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
 			'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER})
-		liz.setInfo(type="Video", infoLabels={"Title": name, "TVShowTitle": SHOW_TITLE, "Season": season, "mediatype": "season"})
+		info_labels = {"Title": name, "TVShowTitle": SHOW_TITLE, "Season": season, "mediatype": "season"}
+		if plot:
+			info_labels["Plot"] = plot
+		liz.setInfo(type="Video", infoLabels=info_labels)
 		liz.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		ok = xbmcplugin.addDirectoryItem(handle=self.phandle, url=u, listitem=liz, isFolder=True)
 		return ok
 
-	def add_entry(self, name, url, mode, iconimage, desc="", season="", episode="", date="", is_playable=False):
+	def add_entry(self, name, url, mode, iconimage, desc="", season="", episode="", date="", is_playable=False, poster=None):
 		name    = _encode(name)
 		desc    = _encode(desc)
 		iconimage = _artwork(iconimage)
@@ -358,6 +382,8 @@ class SouthParkAddon(object):
 			'clearlogo': self.paths.CLEARLOGO, 'tvshow.clearlogo': self.paths.CLEARLOGO,
 			'clearart': self.paths.CLEARART, 'tvshow.clearart': self.paths.CLEARART,
 			'banner': self.paths.BANNER, 'tvshow.banner': self.paths.BANNER}
+		if poster:
+			art['poster'] = _artwork(poster)
 		if IMAGE_HOST in iconimage:
 			art['landscape'] = iconimage
 		entry.setArt(art)
@@ -392,13 +418,14 @@ class SouthParkAddon(object):
 		self.add_entry(ep_title, ep_uuid, ep_mode, ep_image, ep_desc, ep_seas, ep_numb, ep_aird, is_playable=True)
 
 	def create_menu(self):
-		self.add_entry    (self.i18n.MENU_RANDOM_EPISODE   , '', PLUGIN_MODE_RANDOM  , self.paths.PLUGIN_ICON, is_playable=self.options.playrandom())
+		self.add_entry    (self.i18n.MENU_RANDOM_EPISODE   , '', PLUGIN_MODE_RANDOM  , self.paths.RANDOM_POSTER, is_playable=self.options.playrandom(), poster=self.paths.RANDOM_POSTER)
 		xbmcplugin.setContent(self.phandle, 'seasons')
 		#self.add_entry    (self.i18n.MENU_SEARCH_EPISODE   , '', PLUGIN_MODE_SEARCH  , self.paths.PLUGIN_ICON)
 		for i in range(1, self.data.last_season()):
 			dirname  = "{0} {1}".format(self.i18n.MENU_SEASON_EPISODE, i)
 			iconpath = "{0}{1}.jpg".format(self.paths.DEFAULT_IMGDIR, i)
-			self.add_directory(dirname, str(i), PLUGIN_MODE_SEASON, iconpath)
+			plot = _season_plot(self.season_plots, self.options.audio(True), i)
+			self.add_directory(dirname, str(i), PLUGIN_MODE_SEASON, iconpath, plot)
 		xbmcplugin.endOfDirectory(self.phandle)
 
 	def create_random(self):
