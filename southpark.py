@@ -393,6 +393,7 @@ class SouthParkAddon(object):
 
 	def create_menu(self):
 		self.add_entry    (self.i18n.MENU_RANDOM_EPISODE   , '', PLUGIN_MODE_RANDOM  , self.paths.PLUGIN_ICON, is_playable=self.options.playrandom())
+		xbmcplugin.setContent(self.phandle, 'seasons')
 		#self.add_entry    (self.i18n.MENU_SEARCH_EPISODE   , '', PLUGIN_MODE_SEARCH  , self.paths.PLUGIN_ICON)
 		for i in range(1, self.data.last_season()):
 			dirname  = "{0} {1}".format(self.i18n.MENU_SEASON_EPISODE, i)
