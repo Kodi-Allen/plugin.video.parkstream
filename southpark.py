@@ -85,6 +85,19 @@ def _date(string):
 				pass
 	return string
 
+def _season_premiere(episodes):
+	dates = []
+	for episode in episodes:
+		value = _date(episode.get("date", ""))
+		for date_format in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%d.%m.%Y"):
+			try:
+				parsed = time.strptime(value, date_format)
+				dates.append((parsed.tm_year, parsed.tm_mon, parsed.tm_mday))
+				break
+			except (TypeError, ValueError):
+				pass
+	return "{:04d}-{:02d}-{:02d}".format(*min(dates)) if dates else ""
+
 def _load_season_plots(path):
 	try:
 		with open(path, "r", encoding="utf-8") as metadata_file:
@@ -350,7 +363,7 @@ class SouthParkAddon(object):
 		uaddonname = _encode(self.addon_obj.getAddonInfo('name'))
 		xbmcgui.Dialog().notification(uaddonname, utext, uicon, utime)
 
-	def add_directory(self, name, season, mode, iconimage="DefaultFolder.png", plot=""):
+	def add_directory(self, name, season, mode, iconimage="DefaultFolder.png", plot="", premiered=""):
 		u = self.argv[0]+"?mode={0}&season={1}".format(mode, season)
 		ok = True
 		liz = xbmcgui.ListItem(name)
@@ -364,6 +377,10 @@ class SouthParkAddon(object):
 		if plot:
 			info_labels["Plot"] = plot
 		liz.setInfo(type="Video", infoLabels=info_labels)
+		info_tag = liz.getVideoInfoTag()
+		if premiered:
+			info_tag.setPremiered(premiered)
+			info_tag.setYear(int(premiered[:4]))
 		liz.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		ok = xbmcplugin.addDirectoryItem(handle=self.phandle, url=u, listitem=liz, isFolder=True)
 		return ok
@@ -425,7 +442,8 @@ class SouthParkAddon(object):
 			dirname  = "{0} {1}".format(self.i18n.MENU_SEASON_EPISODE, i)
 			iconpath = "{0}{1}.jpg".format(self.paths.DEFAULT_IMGDIR, i)
 			plot = _season_plot(self.season_plots, self.options.audio(True), i)
-			self.add_directory(dirname, str(i), PLUGIN_MODE_SEASON, iconpath, plot)
+			premiered = _season_premiere(self.data.seasons[i - 1])
+			self.add_directory(dirname, str(i), PLUGIN_MODE_SEASON, iconpath, plot, premiered)
 		xbmcplugin.endOfDirectory(self.phandle)
 
 	def create_random(self):
