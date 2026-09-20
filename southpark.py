@@ -106,6 +106,14 @@ def _load_season_plots(path):
 		log_error("Cannot load season plots: {}".format(e))
 		return {}
 
+def _load_episode_metadata(path):
+	try:
+		with open(path, "r", encoding="utf-8") as metadata_file:
+			return _json.load(metadata_file).get("episodes", {})
+	except (IOError, OSError, ValueError) as e:
+		log_error("Cannot load episode metadata: {}".format(e))
+		return {}
+
 def _season_plot(plots, language, season):
 	season = str(season)
 	plot_language = SEASON_PLOT_LANGUAGES.get(language, "en")
@@ -277,6 +285,7 @@ class SP_Paths(object):
 		self.DEFAULT_IMGDIR   = self.translate_path('special://home/addons/{0}/imgs/'.format(addon_id))
 		self.RANDOM_POSTER    = self.translate_path('special://home/addons/{0}/resources/media/random-episode-poster.png'.format(addon_id))
 		self.SEASON_PLOTS     = self.translate_path('special://home/addons/{0}/resources/data/season-plots.json'.format(addon_id))
+		self.EPISODE_METADATA = self.translate_path('special://home/addons/{0}/resources/data/episode-metadata.json'.format(addon_id))
 		self.CLEARLOGO        = self.translate_path('special://home/addons/{0}/resources/media/clearlogo.png'.format(addon_id))
 		self.CLEARART         = self.translate_path('special://home/addons/{0}/resources/media/clearart.png'.format(addon_id))
 		self.BANNER           = self.translate_path('special://home/addons/{0}/resources/media/banner.jpg'.format(addon_id))
@@ -356,6 +365,7 @@ class SouthParkAddon(object):
 		self.i18n      = SP_I18N   (self.addon_obj)
 		self.data      = _load_data(self.options.audio(True), self.paths.PLUGIN_DATA)
 		self.season_plots = _load_season_plots(self.paths.SEASON_PLOTS)
+		self.episode_metadata = _load_episode_metadata(self.paths.EPISODE_METADATA)
 
 	def notify(self, text, utime=WARNING_TIMEOUT_SHORT):
 		utext      = _encode(text)
@@ -385,7 +395,7 @@ class SouthParkAddon(object):
 		ok = xbmcplugin.addDirectoryItem(handle=self.phandle, url=u, listitem=liz, isFolder=True)
 		return ok
 
-	def add_entry(self, name, url, mode, iconimage, desc="", season="", episode="", date="", is_playable=False, poster=None):
+	def add_entry(self, name, url, mode, iconimage, desc="", season="", episode="", date="", is_playable=False, poster=None, metadata=None):
 		name    = _encode(name)
 		desc    = _encode(desc)
 		iconimage = _artwork(iconimage)
@@ -405,6 +415,17 @@ class SouthParkAddon(object):
 			art['landscape'] = iconimage
 		entry.setArt(art)
 		entry.setInfo(type="Video", infoLabels={"Title": name, "Plot": desc, "Season": season, "Episode": episode, "Aired": convdate, "Premiered": convdate, "mediatype": "episode"})
+		if metadata:
+			info_tag = entry.getVideoInfoTag()
+			duration = metadata.get("duration")
+			genres = metadata.get("genres")
+			studio = metadata.get("studio")
+			if isinstance(duration, int) and duration > 0:
+				info_tag.setDuration(duration)
+			if isinstance(genres, list) and genres:
+				info_tag.setGenres(genres)
+			if isinstance(studio, str) and studio:
+				info_tag.setStudios([studio])
 		entry.setProperty("fanart_image", self.paths.DEFAULT_FANART)
 		entry.setProperty("isPlayable", "true" if is_playable else "false")
 		xbmcplugin.setContent(self.phandle, 'episodes')
@@ -432,7 +453,7 @@ class SouthParkAddon(object):
 			ep_title += " [Unavailable]"
 			ep_mode = PLUGIN_MODE_UNAVAILABLE
 
-		self.add_entry(ep_title, ep_uuid, ep_mode, ep_image, ep_desc, ep_seas, ep_numb, ep_aird, is_playable=True)
+		self.add_entry(ep_title, ep_uuid, ep_mode, ep_image, ep_desc, ep_seas, ep_numb, ep_aird, is_playable=True, metadata=self.episode_metadata.get(ep_uuid))
 
 	def create_menu(self):
 		self.add_entry    (self.i18n.MENU_RANDOM_EPISODE   , '', PLUGIN_MODE_RANDOM  , self.paths.RANDOM_POSTER, is_playable=self.options.playrandom(), poster=self.paths.RANDOM_POSTER)
