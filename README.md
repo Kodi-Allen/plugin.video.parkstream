@@ -14,6 +14,8 @@ websites in Kodi. It is an independently maintained fork of
 - Show artwork (clear logo, clear art, banner, fan art) for Kodi skins that display it
 - Random episode, optionally played directly
 - Episodes with more than one audio track offer all tracks in Kodi's audio menu
+- Menus in English, German, Italian, Portuguese (Brazil, Portugal), Spanish (Spain, Mexico)
+  and Swedish
 
 ## Requirements
 

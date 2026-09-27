@@ -78,4 +78,8 @@ msgstr "Reproduz diretamente o episódio aleatório"
 
 msgctxt "#30016"
 msgid "Clear cache"
-msgstr "Limprar o cache"
+msgstr "Limpar o cache"
+
+msgctxt "#30017"
+msgid "Show loading notification"
+msgstr "Mostrar notificação ao carregar"

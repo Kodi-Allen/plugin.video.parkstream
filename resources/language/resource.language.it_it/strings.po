@@ -79,3 +79,7 @@ msgstr "Riproduci direttamente l'episodio casuale"
 msgctxt "#30016"
 msgid "Clear cache"
 msgstr "Rimuovi la cache"
+
+msgctxt "#30017"
+msgid "Show loading notification"
+msgstr "Mostra notifica di caricamento"

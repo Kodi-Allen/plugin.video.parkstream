@@ -7,6 +7,8 @@
 - Official episode stills, season descriptions, premiere dates and runtimes
 - Episodes with several audio tracks offer all tracks in the audio menu
 - Option to hide the loading notification
+- Menu translations for Spanish (Spain, Mexico), Swedish and Portuguese (Portugal)
+- Settings dialog shows a named category instead of an empty one
 - Fixed cache date handling
 0.6.6
 - Added cover for season 24 and 26
