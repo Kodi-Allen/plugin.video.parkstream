@@ -54,8 +54,11 @@ a folder or return to ParkStream.
 
 - Episode lists: the `addon-data` branch of
   [wargio/plugin.video.southpark_unofficial](https://github.com/wargio/plugin.video.southpark_unofficial/tree/addon-data).
-- Streams, episode stills, season descriptions and runtimes: the official South Park websites.
-  `tools/generate-episode-metadata.py` regenerates `resources/data/episode-metadata.json`.
+- Streams, episode stills, English and German season descriptions and runtimes: the official
+  South Park websites. `tools/generate-episode-metadata.py` regenerates
+  `resources/data/episode-metadata.json`.
+- Spanish and Portuguese season descriptions: [TheTVDB](https://thetvdb.com/series/south-park).
+  Locations without descriptions in their own language fall back to English.
 
 ## Development
 
