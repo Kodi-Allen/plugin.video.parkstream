@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Kodi-Allen
+# SPDX-License-Identifier: GPL-2.0-only
 import json
 import unittest
 

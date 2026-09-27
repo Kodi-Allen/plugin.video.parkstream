@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+# Copyright (C) 2026 Kodi-Allen
+# SPDX-License-Identifier: GPL-2.0-only
 """Resolve public South Park episode pages to current playback manifests."""
 
 import json

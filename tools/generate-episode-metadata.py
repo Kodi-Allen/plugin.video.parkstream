@@ -1,4 +1,13 @@
 #!/usr/bin/python3
+# Copyright (C) 2026 Kodi-Allen
+# SPDX-License-Identifier: GPL-2.0-only
+"""Regenerate resources/data/episode-metadata.json (runtimes, genres, studio).
+
+Reads the episode lists of the selected regions and fetches each episode page
+from the official South Park websites. Run from the repository root:
+
+    python3 tools/generate-episode-metadata.py [--regions de en] [--workers 8]
+"""
 
 import argparse
 import json

@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# ParkStream, based on plugin.video.southpark_unofficial
+# Copyright (C) 2015-2023 Giovanni Dante Grazioli (wargio) and contributors
+# Copyright (C) 2026 Kodi-Allen (modified for ParkStream)
+# SPDX-License-Identifier: GPL-2.0-only
 import sys, os
 import json as _json
 import random

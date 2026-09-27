@@ -1,3 +1,12 @@
+1.0.0 (ParkStream)
+- First release as ParkStream, a fork of plugin.video.southpark_unofficial
+- Playback through the current official South Park video service
+- English audio through the official English site
+- Covers for all 26 seasons in one consistent style
+- Show artwork: clear logo, clear art, banner
+- Official episode stills, season descriptions, premiere dates and runtimes
+- Episodes with several audio tracks offer all tracks in the audio menu
+- Fixed cache date handling
 0.6.6
 - Added cover for season 24 and 26
 0.6.5
