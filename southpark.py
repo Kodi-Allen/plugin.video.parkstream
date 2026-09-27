@@ -440,7 +440,7 @@ class SouthParkAddon(object):
 		xbmcplugin.addSortMethod(self.phandle, xbmcplugin.SORT_METHOD_EPISODE)
 		for episode in self.data.seasons[int(season) - 1]:
 			self.add_episode(episode)
-		xbmcplugin.endOfDirectory(self.phandle)
+		xbmcplugin.endOfDirectory(self.phandle, cacheToDisc=False)
 
 	def add_episode(self, episode):
 		ep_mode    = PLUGIN_MODE_PLAY_EP
@@ -469,7 +469,7 @@ class SouthParkAddon(object):
 			plot = _season_plot(self.season_plots, self.options.audio(True), i)
 			premiered = _season_premiere(self.data.seasons[i - 1])
 			self.add_directory(dirname, str(i), PLUGIN_MODE_SEASON, iconpath, plot, premiered)
-		xbmcplugin.endOfDirectory(self.phandle)
+		xbmcplugin.endOfDirectory(self.phandle, cacheToDisc=False)
 
 	def create_random(self):
 		if not self.options.playrandom():
@@ -488,7 +488,7 @@ class SouthParkAddon(object):
 			break
 		if retries > 9:
 			log_error("Cannot find an episode to play!")
-		xbmcplugin.endOfDirectory(self.phandle)
+		xbmcplugin.endOfDirectory(self.phandle, cacheToDisc=False)
 
 
 	def play_episode(self, season, episode):

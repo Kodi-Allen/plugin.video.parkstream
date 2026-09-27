@@ -38,6 +38,8 @@ Open ParkStream from the video add-ons. The add-on settings contain:
 | Clear cache | Removes the cached episode lists. |
 
 Confirm changes in the settings dialog with **OK**. Closing the dialog with *Back* discards them.
+Kodi does not reload the list that is already on screen, so a new location shows up once you open
+a folder or return to ParkStream.
 
 ## Known limitations
 
