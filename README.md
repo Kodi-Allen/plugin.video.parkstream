@@ -35,6 +35,7 @@ Open ParkStream from the video add-ons. The add-on settings contain:
 | Location | Selects the regional South Park site, which determines the audio and description language. *Germany* plays German, *North America [EN]* plays English. |
 | Enable subtitles | Only applies to legacy streams; the current video service delivers no separate subtitles to the add-on. |
 | Play random episode directly | Starts a random episode instead of listing it first. |
+| Show loading notification | Shows "Loading …" with the episode title while an episode starts. On by default. |
 | Clear cache | Removes the cached episode lists. |
 
 Confirm changes in the settings dialog with **OK**. Closing the dialog with *Back* discards them.

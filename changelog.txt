@@ -6,6 +6,7 @@
 - Show artwork: clear logo, clear art, banner
 - Official episode stills, season descriptions, premiere dates and runtimes
 - Episodes with several audio tracks offer all tracks in the audio menu
+- Option to hide the loading notification
 - Fixed cache date handling
 0.6.6
 - Added cover for season 24 and 26

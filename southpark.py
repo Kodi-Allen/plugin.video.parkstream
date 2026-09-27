@@ -338,6 +338,9 @@ class SP_Options(object):
 	def playrandom(self):
 		return self.addon.getSetting('playrandom') == "true"
 
+	def notify_loading(self):
+		return self.addon.getSetting('notify_loading') != "false"
+
 class SP_Data(object):
 	"""Contains the data that is needed by the addon"""
 	def __init__(self, seasons, created):
@@ -472,7 +475,7 @@ class SouthParkAddon(object):
 		xbmcplugin.endOfDirectory(self.phandle, cacheToDisc=False)
 
 	def create_random(self):
-		if not self.options.playrandom():
+		if not self.options.playrandom() and self.options.notify_loading():
 			self.notify(self.i18n.WARNING_LOADING_RANDOM_EPISODE, WARNING_TIMEOUT_SHORT)
 		retries = 0
 		while retries < 10:
@@ -493,7 +496,8 @@ class SouthParkAddon(object):
 
 	def play_episode(self, season, episode):
 		data = self.data.episode(int(season) - 1, int(episode) - 1)
-		self.notify("{0} {1}".format(self.i18n.WARNING_LOADING, _encode(data["title"])), WARNING_TIMEOUT_SHORT)
+		if self.options.notify_loading():
+			self.notify("{0} {1}".format(self.i18n.WARNING_LOADING, _encode(data["title"])), WARNING_TIMEOUT_SHORT)
 		streams   = []
 		subtitles = []
 		manifest_types = []

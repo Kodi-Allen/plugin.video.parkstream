@@ -79,3 +79,7 @@ msgstr "Spielen Sie direkt die zufällige Folge"
 msgctxt "#30016"
 msgid "Clear cache"
 msgstr "Cache leeren"
+
+msgctxt "#30017"
+msgid "Show loading notification"
+msgstr "Benachrichtigung beim Laden anzeigen"
