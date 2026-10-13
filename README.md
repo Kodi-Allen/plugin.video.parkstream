@@ -1,6 +1,10 @@
-# ParkStream
+# ParkStream – South Park Kodi Add-on
 
-Unofficial Kodi video add-on for South Park.
+Unofficial Kodi video add-on for South Park, distributed through the
+[Kodi Allen Repository](https://github.com/Kodi-Allen/kodi-repo). Screenshots, settings,
+known limitations and troubleshooting: **[ParkStream documentation](https://github.com/Kodi-Allen/kodi-repo/blob/main/docs/parkstream/README.md)**.
+
+![ParkStream season list in Kodi with the season 1 cover and season description](https://raw.githubusercontent.com/Kodi-Allen/kodi-repo/main/docs/parkstream/screenshots/parkstream-kodi-season-list.jpg)
 
 ParkStream lets you browse and watch South Park episodes from the official South Park
 websites in Kodi. It is an independently maintained fork of
@@ -23,9 +27,19 @@ websites in Kodi. It is an independently maintained fork of
 
 ## Installation
 
-1. Download `plugin.video.parkstream-<version>.zip`.
+Recommended, with automatic updates:
+
+1. Download the repository installer
+   [`repository.kodiallen-1.0.1.zip`](https://github.com/Kodi-Allen/kodi-repo/raw/main/repository.kodiallen/repository.kodiallen-1.0.1.zip).
 2. In Kodi, enable *Settings → System → Add-ons → Unknown sources*.
-3. Open *Add-ons → Install from zip file* and select the downloaded file.
+3. Open *Settings → Add-ons → Install from zip file* and select the repository ZIP.
+4. Open *Install from repository → Kodi Allen Repository → Video add-ons → ParkStream* and
+   select *Install*.
+
+Manual installation without automatic updates: download the add-on ZIP from the
+[releases](https://github.com/Kodi-Allen/plugin.video.parkstream/releases) and install it with
+*Install from zip file*. The [documentation](https://github.com/Kodi-Allen/kodi-repo/blob/main/docs/parkstream/README.md#installation)
+describes both methods step by step.
 
 ## Usage
 
